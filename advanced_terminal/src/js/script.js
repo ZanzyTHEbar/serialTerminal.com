@@ -398,6 +398,7 @@ function printToConsole(data, color = "36", array = false) {
   /* if (data.includes(`\x0a`)) {
     terminal.write(`\x0d`); // write not writeln else double-spaced
   } */
+  
   if (array == true) {
     for (var i = 0; i < data.length; i++) {
       terminal.write(`\x1B[0;3;${color}m${data[i]}\x1B[0m`);
