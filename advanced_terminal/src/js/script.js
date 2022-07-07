@@ -395,6 +395,9 @@ function printToConsoleln(data, color = "36", array = false) {
   }
 }
 function printToConsole(data, color = "36", array = false) {
+  /* if (data.includes(`\x0a`)) {
+    terminal.write(`\x0d`); // write not writeln else double-spaced
+  } */
   if (array == true) {
     for (var i = 0; i < data.length; i++) {
       terminal.write(`\x1B[0;3;${color}m${data[i]}\x1B[0m`);
@@ -407,24 +410,21 @@ async function listenToPort() {
   const textDecoder = new TextDecoderStream();
   const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
   const reader = textDecoder.readable.getReader();
-  while (port.readable) {
+  // Listen to data coming from the serial device.
+  while (true) {
     try {
-      while (true) {
-        var { value, done } = await reader.read();
-        // value is a string.
-        if (document.getElementById("carriageReturnInBound").checked == true) value = value + "\r";
-        if (document.getElementById("addLineInBound").checked == true) value = value + "\n";
-        if (done) {
-          // Allow the serial port to be closed later.
-          console.log("[readLoop] DONE", done);
-          reader.releaseLock();
-          break;
-        }
-        printToConsole(value);
+      const { value, done } = await reader.read();
+      if (done) {
+        // Allow the serial port to be closed later.
+        console.log('[readLoop] DONE', done);
+        reader.releaseLock();
+        break;
       }
+      // value is a string.
+      printToConsole(value);
+
     } catch (error) {
-      //! TODO: Handle non-fatal read error.
-      console.log("[readLoop] ERROR", error);
+      console.log(error);
     }
   }
 }
