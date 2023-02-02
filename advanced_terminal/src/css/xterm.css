@@ -38,7 +38,7 @@
 .xterm {
     cursor: text;
     position: relative;
-    user-select: none;
+    user-select: text;
     -ms-user-select: none;
     -webkit-user-select: none;
 }
